@@ -8,6 +8,8 @@ sock.connect(("www.google.com",80))
 
 req = "GET / HTTP/1.1\r\nConnection: close\r\n\r\n"
 
+print(req)
+
 sock.send(req.encode("utf-8"))
 
 buffer = bytearray()
