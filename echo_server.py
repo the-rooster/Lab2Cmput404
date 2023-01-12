@@ -12,7 +12,7 @@ def echo_server(connection : socket.socket,address):
         part = connection.recv(4096)
     
     print(buffer.decode("utf-8"))
-    
+
     connection.send(buffer)
 
     return
@@ -22,9 +22,9 @@ def main():
 
     s.bind(("127.0.0.1",8001))
 
+    s.listen()
+    
     while True:
-
-        s.listen()
 
         connection, address = s.accept()
 
