@@ -4,36 +4,37 @@ import multiprocessing
 
 def proxy_to_google(connection : socket.socket,address):
     
-    part = connection.recv(4096)
-    cl_buffer = bytearray()
-
-    google_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-
-    google_socket.connect(("www.google.com",80))
-
-    #receive client input
-    while part:
-        print("READING CLIENT REQ")
-        cl_buffer.extend(part)
+    while connection:
         part = connection.recv(4096)
+        cl_buffer = bytearray()
 
-    print("PROXYING TO www.google.com: ",cl_buffer)
-    #proxy request to google
-    google_socket.send(cl_buffer)
-    
-    #get response from google
-    g_buffer = bytearray()
-    part = google_socket.recv(4096)
-    print('read first bit')
+        google_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
-    while part:
-        g_buffer.extend(part)
+        google_socket.connect(("www.google.com",80))
+
+        #receive client input
+        while part:
+            print("READING CLIENT REQ")
+            cl_buffer.extend(part)
+            part = connection.recv(4096)
+
+        print("PROXYING TO www.google.com: ",cl_buffer)
+        #proxy request to google
+        google_socket.send(cl_buffer)
+        
+        #get response from google
+        g_buffer = bytearray()
         part = google_socket.recv(4096)
+        print('read first bit')
 
-    
-    print(g_buffer.decode("latin-1"))
-    
-    connection.send(g_buffer)
+        while part:
+            g_buffer.extend(part)
+            part = google_socket.recv(4096)
+
+        
+        print(g_buffer.decode("latin-1"))
+        
+        connection.send(g_buffer)
     connection.detach()
     return
 def main():
